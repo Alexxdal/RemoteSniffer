@@ -42,9 +42,19 @@ void IRAM_ATTR Sniffer::SignalInterrupt() {
       {
         nTiming++;
         timing[nTiming] = duration;
-        CodeReady = true;
-        isValid = false;
-        detachInterrupt(digitalPinToInterrupt(interruptPin));
+        if( ((nTiming - 2)/2)%2 == 0)
+        {
+          CodeReady = true;
+          isValid = false;
+          detachInterrupt(digitalPinToInterrupt(interruptPin));
+        }
+        else
+        {
+          CodeReady = false;
+          isValid = false;
+          nTiming = 0;
+          timing[0] = 0;              
+        }
       }
       if(nTiming == MAX_PULSE)
       {
@@ -56,6 +66,7 @@ void IRAM_ATTR Sniffer::SignalInterrupt() {
     }
   }
 }
+
 
 bool Sniffer::isEqual(int A, int B, int tolerance)
 {
